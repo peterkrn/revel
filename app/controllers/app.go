@@ -83,7 +83,7 @@ func (c App) UpdateUser(id int64) revel.Result {
 }
 
 func (c App) DeleteUser(id int64) revel.Result {
-	response := user.DeleteUser
+	response := user.DeleteUser(id)
 	if response != nil {
 		c.Response.Status = 503
 		errors.Error = "Unable to service your request. Please try again later"
