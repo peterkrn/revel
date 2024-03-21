@@ -1,20 +1,116 @@
-{{set . "title" "Home"}}
-{{template "header.html" .}}
+{{set . "title" "CRUD Operations"}}
 
-<header class="jumbotron" style="background-color:#A9F16C">
-  <div class="container">
-    <div class="row">
-      <h1>It works!</h1>
-      <p></p>
-    </div>
-  </div>
-</header>
+{{template "header.html" .}}
 
 <div class="container">
   <div class="row">
-    <div class="span6">
-      {{template "flash.html" .}}
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Add User</h2>
+          <form id="addUserForm" action="/user" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br>
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br>
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required><br>
+            <button type="submit">Add User</button>
+          </form>
+        </div>
+        <div class="col-md-6">
+          <h2>All Users</h2>
+          <table id="usersTable" class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Email</th>
+                <th>Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- User data will be dynamically added here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      function addUser() {
+        // Get form input values
+        const name = $('#name').val();
+        const age = $('#age').val();
+        const email = $('#email').val();
+        const address = $('#address').val();
+      
+        // Create JSON object with user data
+        const userData = {
+          name: name,
+          age: parseInt(age), // Convert age to integer (assuming age is a number)
+          email: email,
+          address: address
+        };
+      
+        // Send AJAX POST request with JSON payload
+        $.ajax({
+          url: '/user', // Change this to the route that maps to the AddUser function in app.go
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(userData),
+          success: function(response) {
+            alert('User added successfully!');
+            $('#addUserForm')[0].reset(); // Reset the form
+          },
+          error: function(xhr, status, error) {
+            console.error(error);
+            alert('An error occurred while adding the user.');
+          }
+        });
+      }
+    
+      function getUser() {
+        $.ajax({
+          url: '/users',
+          type: 'GET',
+          success: function(response) {
+            // Assuming the response is an array of users
+            response.forEach(function(user) {
+              // Create a new table row for each user
+              var row = `<tr>
+                <td>${user.name}</td>
+                <td>${user.age}</td>
+                <td>${user.email}</td>
+                <td>${user.address}</td>
+              </tr>`;
+      
+              // Append the row to the table body
+              $('#usersTable tbody').append(row);
+            });
+          },
+          error: function(xhr, status, error) {
+            console.error(error);
+            alert('An error occurred while fetching the users.');
+          }
+        });
+      }
+    
+      $(document).ready(function() {
+        // Fetch users when the page loads
+        getUser();
+    
+        // Listen for the addUserForm submission
+        $('#addUserForm').on('submit', function(e) {
+          e.preventDefault(); // Prevent the form from submitting normally
+          addUser(); // Call the addUser function
+        });
+      });
+    </script>
+    
   </div>
 </div>
 

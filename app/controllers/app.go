@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"crud/app/helpers"
-	"crud/app/models"
+	"revel-crud/app/helpers"
+	"revel-crud/app/models"
 
 	"github.com/revel/revel"
 )
